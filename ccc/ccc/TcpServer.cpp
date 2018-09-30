@@ -18,6 +18,7 @@ CTcpServer::CTcpServer(NetConfig config)
 
 CTcpServer::~CTcpServer()
 {
+	Stop();
 	if (m_RecvBuf)
 	{
 		delete m_RecvBuf;

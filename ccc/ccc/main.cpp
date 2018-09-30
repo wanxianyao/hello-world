@@ -39,7 +39,7 @@ int main()
 
 		p->Stop();
 
-		Sleep(60 * 1000);
+		Sleep(10 * 1000);
 	}
 
 	return 0;
