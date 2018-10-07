@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "TcpServer.h"
 #include <thread>
 #include "ProgramLog.h"
@@ -18,7 +19,7 @@ CTcpServer::CTcpServer(NetConfig config)
 
 CTcpServer::~CTcpServer()
 {
-	Stop();
+	//Stop();
 	if (m_RecvBuf)
 	{
 		delete m_RecvBuf;
@@ -53,8 +54,10 @@ void CTcpServer::AcceptFunc(CTcpServer* p)
 			closesocket(sClient);
 			return;
 		}
-
-		p->m_AcceptFd.push_back(sClient);
+		p->m_lock.lock();
+		p->m_AcceptFd.push_back(sClient); 
+		p->m_lock.unlock();
+		TRACE("push back %d\n", sClient);
 	}
 }
 
@@ -68,15 +71,19 @@ void CTcpServer::SelectFunc(CTcpServer* p)
 		fd_set fdsets;//创建集合
 		FD_ZERO(&fdsets); //初始化集合
 
-						  //将socket加入到集合中（此例子是一个socket）,将多个socket加入时，可以用数组加for循环
-		for (int i = 0; i < p->m_AcceptFd.size(); i++)
+		p->m_lock.lock();
+		int vec_size = p->m_AcceptFd.size();
+		p->m_lock.unlock();
+		//将socket加入到集合中（此例子是一个socket）,将多个socket加入时，可以用数组加for循环
+		for (int i = 0; i < vec_size; i++)
 		{
+			TRACE("FD_SET %d\n", p->m_AcceptFd[i]);
 			FD_SET(p->m_AcceptFd[i], &fdsets);
 		}
 
 		select(NULL, &fdsets, NULL, NULL, &tv);//只检查可读性，即fd_set中的fd_read进行操作
 
-		for (int i = 0; i < p->m_AcceptFd.size(); i++)
+		for (int i = 0; i < vec_size; i++)
 		{
 			if (FD_ISSET(p->m_AcceptFd[i], &fdsets))
 			{
