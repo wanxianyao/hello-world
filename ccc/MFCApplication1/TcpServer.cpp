@@ -81,14 +81,15 @@ void CTcpServer::SelectFunc(CTcpServer* p)
 	while (!p->m_bIsExit)
 	{
 		timeval tv;
-		tv.tv_sec = 1;
-		tv.tv_usec = 0;
+		tv.tv_sec = 0;
+		tv.tv_usec = 1000;
 		fd_set fdsets;//创建集合
 		FD_ZERO(&fdsets); //初始化集合
 
 		p->m_lock.lock();
 		int vec_size = p->m_AcceptFd.size();
 		p->m_lock.unlock();
+		
 		//将socket加入到集合中（此例子是一个socket）,将多个socket加入时，可以用数组加for循环
 		for (int i = 0; i < vec_size; i++)
 		{
@@ -105,7 +106,7 @@ void CTcpServer::SelectFunc(CTcpServer* p)
 				int nRet = recv(p->m_AcceptFd[i], p->m_RecvBuf, BUFLEN, 0);//看是否能正常接收到数据
 				if (nRet == 0 || nRet == SOCKET_ERROR)
 				{
-					TRACE("recv close");
+					p->m_config.cb(p->m_AcceptFd[i], NULL, -1, p->m_config.pcbParam);
 					if (p->m_AcceptFd[i] != INVALID_SOCKET)
 					{
 						closesocket(p->m_AcceptFd[i]);
@@ -113,6 +114,7 @@ void CTcpServer::SelectFunc(CTcpServer* p)
 					
 					//将失效的sockClient剔除
 					p->RemoveFd(p->m_AcceptFd[i]);
+					break;
 				}
 				else
 				{
@@ -121,7 +123,7 @@ void CTcpServer::SelectFunc(CTcpServer* p)
 					p->m_config.cb(p->m_AcceptFd[i], p->m_RecvBuf, nRet, p->m_config.pcbParam);
 				}
 			}		
-		}
+		}		
 	}
 
 	SetEvent(p->m_handle);
