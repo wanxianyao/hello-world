@@ -136,7 +136,7 @@ int CTcpServer::Run()
 	if (INVALID_SOCKET == m_fd)
 	{
 		WSACleanup();
-		return FALSE;
+		return NET_ERR;
 	}
 
 	//2 设置socket reuse
@@ -144,7 +144,7 @@ int CTcpServer::Run()
 	if (SOCKET_ERROR == setsockopt(m_fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&bReuseaddr, sizeof(BOOL)))
 	{
 		closesocket(m_fd);
-		return FALSE;
+		return NET_ERR;
 	}
 	
 	//3 准备通信地址  
@@ -158,13 +158,14 @@ int CTcpServer::Run()
 	if (SOCKET_ERROR == ret)
 	{
 		closesocket(m_fd);
-		return FALSE;
+		return NET_ERR;
 	}
 
 	//5 监听 （listen)  
 	if (SOCKET_ERROR == listen(m_fd, SOMAXCONN))
 	{
 		closesocket(m_fd);
+		return NET_ERR;
 	}
 
 	std::thread t1(CTcpServer::AcceptFunc, this);
