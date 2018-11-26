@@ -29,6 +29,8 @@
 
 ***
 
+代码`int`
+
 ```go
 func main() {
     fmt.Printfln("hello")
