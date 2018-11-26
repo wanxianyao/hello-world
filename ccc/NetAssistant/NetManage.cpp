@@ -3,10 +3,6 @@
 #include "TcpClient.h"
 #include "TcpServer.h"
 
-<<<<<<< HEAD
-
-=======
->>>>>>> df2573f07fa1fe68bd516138ccadaf4f7da15fbe
 CNetManage::CNetManage()
 {
 }
@@ -85,17 +81,11 @@ bool CNetManage::ValidateConfig(NetConfig *pConf, ENetType eType)
 	}
 	else if (eType == UDP_CLIENT)
 	{
-<<<<<<< HEAD
-	}
-	else if (eType == UDP_SERVER)
-	{
-=======
 		return false;
 	}
 	else if (eType == UDP_SERVER)
 	{
 		return false;
->>>>>>> df2573f07fa1fe68bd516138ccadaf4f7da15fbe
 	}
 	else
 	{

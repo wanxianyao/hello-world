@@ -33,10 +33,27 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
+<<<<<<< HEAD
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnBnClickedBtnStop();
 
 	CNetManage m;
 	CTcpServer *p;
+=======
+	afx_msg void OnBnClickedBtnStart();
+	afx_msg void OnBnClickedBtnStop();
+	static int CALLBACK RecvCb(SOCKET fd, char* sRecv, int len, void* pParma);
+	static int CALLBACK AcceptCb(SOCKET fd, void* pParma);
+	static int CALLBACK RecvCliCb(SOCKET fd, char* sRecv, int len, void* pParma);
+	static int CALLBACK ExitCb(SOCKET fd, void* pParma);
+
+	CNetManage m;
+	CTcpServer *p;
+	CTcpClient *pClient;
+	afx_msg void OnBnClickedBtnSend();
+	afx_msg void OnBnClickedBtnStart2();
+	afx_msg void OnBnClickedBtnStop2();
+	afx_msg void OnBnClickedBtnSend2();
+>>>>>>> df2573f07fa1fe68bd516138ccadaf4f7da15fbe
 };
